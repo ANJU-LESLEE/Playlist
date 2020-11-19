@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PlaylistModel {
-	
+	private Long playlistId;
 	private String playlistName;
 	private List<SongEntity> songList;
 	
@@ -18,6 +18,12 @@ public class PlaylistModel {
 	}
 	public String getPlaylistName() {
 		return playlistName;
+	}
+	public Long getPlaylistId() {
+		return playlistId;
+	}
+	public void setPlaylistId(Long playlistId) {
+		this.playlistId = playlistId;
 	}
 	public void setPlaylistName(String playlistName) {
 		this.playlistName = playlistName;

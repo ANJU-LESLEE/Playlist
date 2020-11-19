@@ -1,7 +1,16 @@
 package com.myproject.springboot.playlistapp.model;
 
-public class SongEntity {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name= "songs")
+public class SongEntity {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int songId;
 	private String songName;
 	private String singerName;

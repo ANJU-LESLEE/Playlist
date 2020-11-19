@@ -12,7 +12,11 @@ public interface PlayListDaoService {
 	public List<PlaylistEntity> getAllPlaylist();
 	public List<SongEntity> getAllSong();
 	public List<SongEntity> getSongListByPlaylistId(Long id);
-	public List<PlaylistSongResultEntity> getAllPlaylistSong();
-	List<PlayListSongEntity> getAllPlaylistSongDefault();
+	public PlaylistEntity getPlaylistByID(Long playlistId);
+	public PlayListSongEntity getSongByPlaylistId(Long playlistId, Long SongId);
+	public PlaylistEntity getPlaylistByName(String playlistName);
+	public int insert(PlaylistEntity thePlaylist);
+	public void deletePlaylist(Long playlistId);
+	public void deleteSong(Long id);
 	
 }

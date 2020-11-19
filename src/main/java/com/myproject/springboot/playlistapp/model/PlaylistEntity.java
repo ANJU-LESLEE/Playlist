@@ -5,20 +5,26 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
+
 
 @Entity
 @Table(name = "playlist")
 public class PlaylistEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long playlistId;
-	
+
+
+	@NotNull(message="is Required")
+	@Max(20)
 	private String playlistName;
 
 	public PlaylistEntity() {
 	}
-	
+
 	public PlaylistEntity(Long playlistId, String playlistName) {
 		this.playlistId = playlistId;
 		this.playlistName = playlistName;

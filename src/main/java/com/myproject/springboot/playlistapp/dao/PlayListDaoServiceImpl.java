@@ -20,14 +20,18 @@ public class PlayListDaoServiceImpl implements PlayListDaoService {
 
 	@Autowired
 	private PlaylistRepository playlistRepository;
+	@Autowired
+	private PlayListSongRepository playListSongRepository;
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
-	final private String QUERY="SELECT psd.id, pl.playlist_id,psd.song_id, pl.playlist_name ,sg.song_name, sg.singer_name  FROM playlist_song_def psd JOIN songs sg ON sg.song_id=psd.song_id JOIN playlist pl ON pl.playlist_id= psd.playlist_id";
-
 	final private String QUERYBYID="SELECT  sg.song_id, sg.song_name, sg.singer_name  FROM songs sg JOIN playlist_song_def psd ON sg.song_id=psd.song_id where psd.playlist_id= ?";
 
+	final private String INSERTPLAYLIST="INSERT INTO playlist (playlist_name) VALUES(?)";
+	
+	final private String SONGIDQUERY="SELECT * FROM playlist_song_def where playlist_id=? and song_id=? ";
+	
 	@Override
 	public List<PlaylistEntity> getAllPlaylist() {
 		final List<PlaylistEntity> playlistEntityList = new ArrayList<>();
@@ -61,28 +65,46 @@ public class PlayListDaoServiceImpl implements PlayListDaoService {
 	}
 
 	@Override
-	public List<PlaylistSongResultEntity> getAllPlaylistSong() {
-		List<PlaylistSongResultEntity> playlistSongResultEntityList = jdbcTemplate.query(QUERY, new RowMapper<PlaylistSongResultEntity>() {
-
-			@Override
-			public PlaylistSongResultEntity mapRow(ResultSet rs, int rownum) throws SQLException {
-				PlaylistSongResultEntity playlistSongResultEntity = new PlaylistSongResultEntity(
-						rs.getLong("id"),
-						rs.getLong("playlist_id"),
-						rs.getLong("song_id"),
-						rs.getString("playlist_name"),
-						rs.getString("song_name"),
-						rs.getString("Singer_name"));
-				return playlistSongResultEntity;
-			}
-		});
-		return playlistSongResultEntityList;
+	public PlaylistEntity getPlaylistByID(Long playlistId) {
+		return playlistRepository.findById(playlistId).stream().findFirst().orElse(null);
+	}
+	
+	@Override
+	public PlaylistEntity getPlaylistByName(String playlistName) {
+		return playlistRepository.findByPlaylistName(playlistName);
 	}
 
 	@Override
-	public List<PlayListSongEntity> getAllPlaylistSongDefault() {
-		// TODO Auto-generated method stub
+	public int insert(PlaylistEntity thePlaylist) {
+		return jdbcTemplate.update(INSERTPLAYLIST, thePlaylist.getPlaylistName());
+	}
+	
+	@Override
+	public void deletePlaylist(Long playlistId) {
+		 playlistRepository.deleteById(playlistId);
+	}
+	
+	@Override
+	public PlayListSongEntity getSongByPlaylistId(Long playlistId,Long SongId) {
+		List<PlayListSongEntity> resultEntity = jdbcTemplate.query(SONGIDQUERY,new Object[]{playlistId,SongId},new RowMapper<PlayListSongEntity>() {
+
+			@Override
+			public PlayListSongEntity mapRow(ResultSet rs, int rownum) throws SQLException {
+				PlayListSongEntity playListSongEntity = new PlayListSongEntity(
+						rs.getLong("id"),
+						rs.getLong("playlist_id"),
+						rs.getLong("song_id"));
+				return playListSongEntity;
+			}
+		});
+		if(!resultEntity.isEmpty())
+			return resultEntity.stream().findFirst().orElse(null);
 		return null;
+	}
+
+	@Override
+	public void deleteSong(Long id) {
+		 playListSongRepository.deleteById(id);
 	}
 
 }

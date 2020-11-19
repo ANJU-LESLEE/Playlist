@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @Table(name="playlist_song_def")
 public class PlayListSongEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	private Long playlistId;
@@ -19,7 +19,7 @@ public class PlayListSongEntity {
 	public PlayListSongEntity() {
 	}
 
-	public PlayListSongEntity(Long id, Long playlistId, Long songId, PlaylistEntity playlist, SongEntity song) {
+	public PlayListSongEntity(Long id, Long playlistId, Long songId) {
 		this.id = id;
 		this.playlistId = playlistId;
 		this.songId = songId;

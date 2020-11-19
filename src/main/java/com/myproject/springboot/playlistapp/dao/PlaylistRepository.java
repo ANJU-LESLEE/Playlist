@@ -7,5 +7,5 @@ import com.myproject.springboot.playlistapp.model.PlaylistEntity;
 
 @Repository
 public interface PlaylistRepository extends CrudRepository<PlaylistEntity, Long> {
-	
+	public PlaylistEntity findByPlaylistName(String playlistName);
 }
