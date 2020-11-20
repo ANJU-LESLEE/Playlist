@@ -2,8 +2,7 @@ package com.myproject.springboot.playlistapp.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.Entity;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
@@ -12,9 +11,11 @@ public class PlaylistModel {
 	private Long playlistId;
 	private String playlistName;
 	private List<SongEntity> songList;
+	private List<String> songItemResult ;
 	
 	public PlaylistModel() {
 		this.songList = new ArrayList<SongEntity>();
+		this.songItemResult = new ArrayList<>();
 	}
 	public String getPlaylistName() {
 		return playlistName;
@@ -34,6 +35,11 @@ public class PlaylistModel {
 	public void setSongList(List<SongEntity> songList) {
 		this.songList = songList;
 	}
-	
+	public List<String> getSongItemResult() {
+		return this.songItemResult;
+	}
+	public void setSongItemResult(List<String> songItemResult) {
+		this.songItemResult = songItemResult;
+	}
 
 }

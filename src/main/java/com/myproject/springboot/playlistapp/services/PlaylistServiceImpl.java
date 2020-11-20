@@ -2,6 +2,7 @@ package com.myproject.springboot.playlistapp.services;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,21 +25,27 @@ public class PlaylistServiceImpl implements PlaylistService {
 	public List<PlaylistModel> getAllPlaylistSong() {
 		List<PlaylistModel> playlistModelList = new ArrayList<>();
 		List<PlaylistEntity> playlistEntityList = playListDaoService.getAllPlaylist();
-		playlistEntityList.stream().forEach(playlistEntity ->{
-			PlaylistModel playlistModel=new PlaylistModel();
-			List<SongEntity> songListlist=  null;
-			playlistModel.setPlaylistId(playlistEntity.getPlaylistId());
-			if(playlistEntity.getPlaylistName()!= null)
-				playlistModel.setPlaylistName(playlistEntity.getPlaylistName());
-			songListlist=playListDaoService.getSongListByPlaylistId(playlistEntity.getPlaylistId());
-			if( Objects.isNull(songListlist))
-				songListlist=Collections.emptyList();
-			playlistModel.setSongList(songListlist);
-			playlistModelList.add(playlistModel);
-		});
+		List<String> songResultList = getAllSong();
+		if(Objects.nonNull(playlistEntityList)) {
+			playlistEntityList.stream().forEach(playlistEntity ->{
+				PlaylistModel playlistModel=new PlaylistModel();
+				List<SongEntity> songListlist=  null;
+				playlistModel.setPlaylistId(playlistEntity.getPlaylistId());
+				if(playlistEntity.getPlaylistName()!= null)
+					playlistModel.setPlaylistName(playlistEntity.getPlaylistName());
+				songListlist=playListDaoService.getSongListByPlaylistId(playlistEntity.getPlaylistId());
+				if( Objects.isNull(songListlist))
+					songListlist=Collections.emptyList();
+				playlistModel.setSongList(songListlist);
+				if( Objects.isNull(songResultList))
+					songListlist=Collections.emptyList();
+				playlistModel.setSongItemResult(songResultList);
+				playlistModelList.add(playlistModel);
+			});
+		}
 		return playlistModelList;
 	}
-	
+
 	@Override
 	public int insertPlaylist(PlaylistEntity thePlaylist) {
 		PlaylistEntity result = playListDaoService.getPlaylistByName(thePlaylist.getPlaylistName());
@@ -48,7 +55,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		}
 		return 0;
 	}
-	
+
 
 	@Override
 	public String deletePlaylist(String playlistId) {
@@ -68,6 +75,34 @@ public class PlaylistServiceImpl implements PlaylistService {
 			return "success";
 		}
 		return null;
+	}
+
+	@Override
+	public List<String> getAllSong() {
+		List<SongEntity> songResult = playListDaoService.getAllSong();
+		List<String> songItemResult = new ArrayList<>();
+		if(Objects.nonNull(songResult)) {
+			songResult.stream().forEach(song -> songItemResult.add(song.getSongName()+":"+song.getSingerName()));
+			return songItemResult;
+		}
+		return null; 
+	}
+
+	@Override
+	public int insertSong(String playlistId,String songDetails) {
+		String [] song=songDetails.split(":");
+		PlayListSongEntity playListSongEntity=new PlayListSongEntity();
+		int songId = playListDaoService.getSongIdByName(song[0].trim(),song[1].trim());
+		if(songId!=0) {
+			playListSongEntity.setPlaylistId(Long.valueOf(playlistId));
+			playListSongEntity.setSongId(Long.valueOf(songId));
+			PlayListSongEntity result = playListDaoService.getSongByPlaylistId(playListSongEntity.getPlaylistId(),playListSongEntity.getSongId());
+			if(Objects.isNull(result)) {
+				int insertResult = playListDaoService.insertSong(playListSongEntity);
+				return insertResult;
+			}
+		}
+		return 0;
 	}
 
 }

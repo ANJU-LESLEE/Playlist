@@ -33,12 +33,29 @@
 							</div>
 							<br>
 						</c:forEach>
-					</c:if></td>
+					</c:if>
+					<button id="add-song-btn_${playlistNameItem.playlistId}">Add
+						songs</button>
+					<div id="song-add-model_${playlistNameItem.playlistId}"
+						class="modal">
+						<div class="modal-content">
+							<span id="add-song-span_${playlistNameItem.playlistId}"
+								class="close">&times;</span>
+							<form:form id="song-add-form_${playlistNameItem.playlistId}"
+								action="addSong/${playlistNameItem.playlistId}" method="get" modelAttribute="playlistNameItem">
+							Choose songs:
+							<form:select path="songItemResult">
+									<form:options items="${playlistNameItem.songItemResult}" />
+								</form:select>
+								<form:button>Add Songs</form:button>
+							</form:form>
+						</div>
+
+					</div></td>
 				<td>
 					<button id="del-btn_${playlistNameItem.playlistId}">Delete
 						playlist</button>
-					<div id="playlist-del-model_${playlistNameItem.playlistId}"
-						class="modal">
+					<div id="playlist-del-model_${playlistNameItem.playlistId}" class="modal">
 						<div class="modal-content">
 							<span id="del-playlist-span_${playlistNameItem.playlistId}"
 								class="close">&times;</span> Are you sure to delete
@@ -66,7 +83,6 @@
 							<form:button>Create playlist</form:button>
 						</form:form>
 					</div>
-
 				</div>
 			</td>
 		</tr>

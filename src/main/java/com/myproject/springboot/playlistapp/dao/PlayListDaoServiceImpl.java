@@ -22,6 +22,8 @@ public class PlayListDaoServiceImpl implements PlayListDaoService {
 	private PlaylistRepository playlistRepository;
 	@Autowired
 	private PlayListSongRepository playListSongRepository;
+	@Autowired
+	private SongRepository songRepository;
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
@@ -32,6 +34,9 @@ public class PlayListDaoServiceImpl implements PlayListDaoService {
 	
 	final private String SONGIDQUERY="SELECT * FROM playlist_song_def where playlist_id=? and song_id=? ";
 	
+	final private String SONGIDBYNAME="SELECT song_id FROM songs where song_name=\"?\" and singer_name=\"?\" ";
+	
+	final private String INSERTSONG="INSERT INTO playlist_song_def (playlist_id,song_id) VALUES(?,?)";
 	@Override
 	public List<PlaylistEntity> getAllPlaylist() {
 		final List<PlaylistEntity> playlistEntityList = new ArrayList<>();
@@ -41,7 +46,7 @@ public class PlayListDaoServiceImpl implements PlayListDaoService {
 
 	@Override
 	public List<SongEntity> getAllSong() {
-		return null;
+		return (List<SongEntity>)songRepository.findAll();
 	}
 
 	@Override
@@ -105,6 +110,26 @@ public class PlayListDaoServiceImpl implements PlayListDaoService {
 	@Override
 	public void deleteSong(Long id) {
 		 playListSongRepository.deleteById(id);
+	}
+	
+	@Override
+	public int getSongIdByName(String songName,String singerName) {
+		List<Integer> resultEntity = jdbcTemplate.query(SONGIDBYNAME, new Object[]{songName,singerName},  new RowMapper<Integer>() {
+
+			@Override
+			public Integer mapRow(ResultSet rs, int rownum) throws SQLException {
+						return rs.getInt("song_id");
+			}
+		});
+		if(!resultEntity.isEmpty())
+			return resultEntity.stream().findFirst().orElse(null);
+		return 0;
+		
+	}
+	
+	@Override
+	public int insertSong(PlayListSongEntity playListSongEntity) {
+		return jdbcTemplate.update(INSERTSONG, playListSongEntity.getPlaylistId(),playListSongEntity.getSongId());
 	}
 
 }
