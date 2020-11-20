@@ -27,7 +27,7 @@
 								<c:out value="${songItem.songName}" />
 								:
 								<c:out value="${songItem.singerName}" />
-								<a href="deleteSong/${playlistNameItem.playlistId}/"><span
+								<a href="deleteSong/${playlistNameItem.playlistId}/${songItem.songId}"><span
 									id="del-song-span_${playlistNameItem.playlistId}" class="close">&times;</span>
 								</a>
 							</div>
