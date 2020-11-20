@@ -82,7 +82,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		List<SongEntity> songResult = playListDaoService.getAllSong();
 		List<String> songItemResult = new ArrayList<>();
 		if(Objects.nonNull(songResult)) {
-			songResult.stream().forEach(song -> songItemResult.add(song.getSongName()+":"+song.getSingerName()));
+			songResult.stream().forEach(song -> songItemResult.add(song.getSongId()+":"+song.getSongName()+":"+song.getSingerName()));
 			return songItemResult;
 		}
 		return null; 
@@ -90,9 +90,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	@Override
 	public int insertSong(String playlistId,String songDetails) {
-		String [] song=songDetails.split(":");
+		String [] song=songDetails.replaceAll("\\[", " ").split(":");
+		int songId=Integer.parseInt(song[0].trim());
 		PlayListSongEntity playListSongEntity=new PlayListSongEntity();
-		int songId = playListDaoService.getSongIdByName(song[0].trim(),song[1].trim());
 		if(songId!=0) {
 			playListSongEntity.setPlaylistId(Long.valueOf(playlistId));
 			playListSongEntity.setSongId(Long.valueOf(songId));

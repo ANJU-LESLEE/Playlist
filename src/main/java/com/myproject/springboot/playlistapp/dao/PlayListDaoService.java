@@ -18,7 +18,7 @@ public interface PlayListDaoService {
 	public int insert(PlaylistEntity thePlaylist);
 	public void deletePlaylist(Long playlistId);
 	public void deleteSong(Long id);
-	public int getSongIdByName(String songName, String singerName);
+	public SongEntity getSongIdByName(String songName, String singerName);
 	public int insertSong(PlayListSongEntity playListSongEntity);
 	
 }

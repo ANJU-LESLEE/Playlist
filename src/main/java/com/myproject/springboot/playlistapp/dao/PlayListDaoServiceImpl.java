@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -34,7 +36,7 @@ public class PlayListDaoServiceImpl implements PlayListDaoService {
 	
 	final private String SONGIDQUERY="SELECT * FROM playlist_song_def where playlist_id=? and song_id=? ";
 	
-	final private String SONGIDBYNAME="SELECT song_id FROM songs where song_name=\"?\" and singer_name=\"?\" ";
+	final private String SONGIDBYNAME="SELECT song_id FROM songs where song_name like ? and singer_name like ?";
 	
 	final private String INSERTSONG="INSERT INTO playlist_song_def (playlist_id,song_id) VALUES(?,?)";
 	@Override
@@ -113,17 +115,12 @@ public class PlayListDaoServiceImpl implements PlayListDaoService {
 	}
 	
 	@Override
-	public int getSongIdByName(String songName,String singerName) {
-		List<Integer> resultEntity = jdbcTemplate.query(SONGIDBYNAME, new Object[]{songName,singerName},  new RowMapper<Integer>() {
-
-			@Override
-			public Integer mapRow(ResultSet rs, int rownum) throws SQLException {
-						return rs.getInt("song_id");
-			}
-		});
-		if(!resultEntity.isEmpty())
-			return resultEntity.stream().findFirst().orElse(null);
-		return 0;
+	public SongEntity getSongIdByName(String songName,String singerName) {
+		  List<SongEntity> resultEntityList = songRepository.findBySongNameAndSingerName(songName, singerName);
+		if(Objects.nonNull(resultEntityList)) {
+			resultEntityList.stream().findFirst();
+		}
+		return null;
 		
 	}
 	
